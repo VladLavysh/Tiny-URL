@@ -2,34 +2,59 @@
 
 A simple and lightweight URL shortening library for Node.js. This package provides functionality to create short URLs from long ones and decode them back.
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Creating a Short URL](#creating-a-short-url)
+  - [Customization Options](#customization-options)
+  - [Using Different Hash Algorithms](#using-different-hash-algorithms)
+  - [Decoding a Short URL](#decoding-a-short-url)
+- [Advanced Usage](#advanced-usage)
+  - [Customizing URL Structure](#customizing-url-structure)
+- [How It Works](#how-it-works)
+- [API Reference](#api-reference)
+- [License](#license)
+
 ## Installation
 
 ```bash
-npm install @vladislav/tiny-url-shortener
+npm install @unitio-code/url-shortener
 ```
 
 ## Usage
 
 ### Creating a Short URL
 
-```typescript
-import { createShortUrl } from "@vladislav/tiny-url-shortener";
+#### 1. Create a short URL with required domain parameter
 
-// 1. Create a short URL with required domain parameter
+```typescript
+import { createShortUrl } from "@unitio-code/url-shortener";
+
 const shortUrl = createShortUrl(
   "https://example.com/very/long/path/with/many/parameters?param1=value1&param2=value2",
   "short.url"
 );
 console.log(shortUrl); // Output: short.url/r/Ab3x7Z (example)
+```
 
-// 2. Create a short URL with custom domain
+#### 2. Create a short URL with custom domain
+
+```typescript
+import { createShortUrl } from "@unitio-code/url-shortener";
+
 const customShortUrl = createShortUrl(
   "https://example.com/very/long/path",
   "myshort.link"
 );
 console.log(customShortUrl); // Output: myshort.link/r/Xy4p9Q (example)
+```
 
-// 3. Create a short URL with customized options
+#### 3. Create a short URL with customized options
+
+```typescript
+import { createShortUrl } from "@unitio-code/url-shortener";
+
 const customizedUrl = createShortUrl(
   "https://example.com/very/long/path",
   "myshort.link",
@@ -65,13 +90,22 @@ interface CreateShortUrlOptions {
 
 ### Using Different Hash Algorithms
 
+#### Using the SDBM hash algorithm
+
 ```typescript
-// Using the SDBM hash algorithm
+import { createShortUrl } from "@unitio-code/url-shortener";
+
 const sdbmUrl = createShortUrl("https://example.com/path", "short.url", {
   hashAlgorithm: "sdbm",
 });
+console.log(sdbmUrl); // Output: short.url/r/Kp7q2R (example)
+```
 
-// Using a custom hash function
+#### Using a custom hash function
+
+```typescript
+import { createShortUrl } from "@unitio-code/url-shortener";
+
 const customHashUrl = createShortUrl("https://example.com/path", "short.url", {
   hashAlgorithm: "custom",
   customHashFn: (url) => {
@@ -83,16 +117,25 @@ const customHashUrl = createShortUrl("https://example.com/path", "short.url", {
     return hash;
   },
 });
+console.log(customHashUrl); // Output: short.url/r/Mn5t8V (example)
 ```
 
 ### Decoding a Short URL
 
+#### Basic decoding example
+
 ```typescript
-import { decodeUrl } from "@vladislav/tiny-url-shortener";
+import { decodeUrl } from "@unitio-code/url-shortener";
 
 // Decode a short URL to get the original URL
 const originalUrl = decodeUrl("short.url/r/Ab3x7Z");
 console.log(originalUrl); // Output: https://example.com/very/long/path (original URL)
+```
+
+#### Handling non-existent URLs
+
+```typescript
+import { decodeUrl } from "@unitio-code/url-shortener";
 
 // If the short URL is not found in storage
 const unknownUrl = decodeUrl("short.url/r/Unknown");
@@ -105,28 +148,46 @@ if (unknownUrl === undefined) {
 
 ### Customizing URL Structure
 
+#### Without redirect path segment
+
 ```typescript
-// Without redirect path segment
+import { createShortUrl } from "@unitio-code/url-shortener";
+
 const noRedirectPath = createShortUrl("https://example.com/path", "short.url", {
   includeRedirectPath: false,
 });
 console.log(noRedirectPath); // Output: short.url/Ab3x7Z
+```
 
-// With custom redirect path segment
+#### With custom redirect path segment
+
+```typescript
+import { createShortUrl } from "@unitio-code/url-shortener";
+
 const customPath = createShortUrl("https://example.com/path", "short.url", {
   redirectPathSegment: "goto",
 });
 console.log(customPath); // Output: short.url/goto/Ab3x7Z
+```
 
-// With custom path separator
+#### With custom path separator
+
+```typescript
+import { createShortUrl } from "@unitio-code/url-shortener";
+
 const customSeparator = createShortUrl(
   "https://example.com/path",
   "short.url",
   { pathSeparator: "-" }
 );
 console.log(customSeparator); // Output: short.url-r-Ab3x7Z
+```
 
-// With protocol included
+#### With protocol included
+
+```typescript
+import { createShortUrl } from "@unitio-code/url-shortener";
+
 const withProtocol = createShortUrl("https://example.com/path", "short.url", {
   includeProtocol: true,
 });
@@ -162,12 +223,14 @@ Decodes a short URL back to its original URL.
 Encodes a numeric ID to a base62 string.
 
 - `id`: The numeric ID to encode
+- Returns: A base62 encoded string
 
 ### `decodeShortUrl(shortCode: string): number`
 
 Decodes a base62 encoded short code back to its numeric ID.
 
 - `shortCode`: The base62 encoded string
+- Returns: The numeric ID
 
 ### `buildShortUrl(id: number, options: ShortUrlOptions): string`
 
@@ -175,6 +238,7 @@ Builds a complete short URL from a numeric ID and options.
 
 - `id`: The numeric ID to encode
 - `options`: Configuration options for the short URL (domain is required)
+- Returns: The complete short URL string
 
 ## License
 
