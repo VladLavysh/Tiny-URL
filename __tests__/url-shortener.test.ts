@@ -40,6 +40,21 @@ describe('URL Shortener', () => {
       
       expect(shortUrl1).not.toEqual(shortUrl2);
     });
+    
+    it('should create a short URL with custom options', () => {
+      const longUrl = 'https://example.com/very/long/path';
+      const domain = 'test.domain';
+      const options = {
+        includeProtocol: true,
+        protocol: 'https',
+        redirectPathSegment: 'goto'
+      };
+      
+      const shortUrl = createShortUrl(longUrl, domain, options);
+      
+      expect(shortUrl).toContain('https://');
+      expect(shortUrl).toContain('/goto/');
+    });
   });
 
   describe('decodeUrl', () => {

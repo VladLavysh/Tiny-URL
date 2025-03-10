@@ -27,21 +27,20 @@ const DEFAULT_CREATE_OPTIONS: CreateShortUrlOptions = {
 /**
  * Creates a short URL from a long URL with customizable options
  * @param longUrl - The original long URL to shorten
- * @param domainOrOptions - Domain name (required) or configuration options object
+ * @param domain - Domain name for the short URL
+ * @param options - Optional configuration options
  * @returns The shortened URL
  */
 export function createShortUrl(
   longUrl: string,
-  domainOrOptions: string | Partial<CreateShortUrlOptions>
+  domain: string,
+  options?: Partial<Omit<CreateShortUrlOptions, "domain">>
 ): string {
-  const opts: CreateShortUrlOptions =
-    typeof domainOrOptions === "string"
-      ? { ...DEFAULT_CREATE_OPTIONS, domain: domainOrOptions }
-      : {
-          ...DEFAULT_CREATE_OPTIONS,
-          ...domainOrOptions,
-          domain: domainOrOptions.domain || DEFAULT_CREATE_OPTIONS.domain,
-        };
+  const opts: CreateShortUrlOptions = {
+    ...DEFAULT_CREATE_OPTIONS,
+    domain,
+    ...options,
+  };
 
   let hash: number;
 
@@ -63,7 +62,6 @@ export function createShortUrl(
 
   const positiveHash = Math.abs(hash);
 
-  // Store the mapping between the hash and the original URL
   storeUrlMapping(positiveHash, longUrl);
 
   return buildShortUrl(positiveHash, opts);
@@ -75,13 +73,9 @@ export function createShortUrl(
  * @returns The extracted short code
  */
 function extractShortCode(shortUrl: string): string {
-  // Handle URLs with or without protocol
   const urlWithoutProtocol = shortUrl.replace(/^https?:\/\//, "");
-
-  // Split by path separator (default is '/')
   const parts = urlWithoutProtocol.split("/");
 
-  // The short code is the last part of the URL
   return parts[parts.length - 1];
 }
 
@@ -95,10 +89,8 @@ export function decodeUrl(shortUrl: string): string | undefined {
     const shortCode = extractShortCode(shortUrl);
     const id = decodeShortUrl(shortCode);
 
-    // Retrieve the original URL from storage
     return getOriginalUrl(id);
   } catch (error) {
-    // Return undefined if there's an error during decoding
     return undefined;
   }
 }

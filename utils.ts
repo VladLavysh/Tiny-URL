@@ -40,17 +40,11 @@ export function decodeShortUrl(shortCode: string): number {
  * Configuration options for building a short URL
  */
 export interface ShortUrlOptions {
-  /** The domain for the short URL (REQUIRED) */
   domain: string;
-  /** Whether to include the '/r/' path segment (default: true) */
   includeRedirectPath?: boolean;
-  /** Custom path segment to use instead of 'r' (default: 'r') */
   redirectPathSegment?: string;
-  /** Whether to include protocol in the URL (default: false) */
   includeProtocol?: boolean;
-  /** Protocol to use if includeProtocol is true (default: 'https') */
   protocol?: string;
-  /** Custom separator between path segments (default: '/') */
   pathSeparator?: string;
 }
 
@@ -63,7 +57,7 @@ export const DEFAULT_SHORT_URL_OPTIONS: ShortUrlOptions = {
   redirectPathSegment: "r",
   includeProtocol: false,
   protocol: "https",
-  pathSeparator: "/"
+  pathSeparator: "/",
 };
 
 /**
@@ -100,30 +94,26 @@ export function buildShortUrl(
   id: number,
   options?: string | ShortUrlOptions
 ): string {
-  // Handle the case where options is a string (backward compatibility)
-  const opts: ShortUrlOptions = typeof options === "string" 
-    ? { ...DEFAULT_SHORT_URL_OPTIONS, domain: options }
-    : { ...DEFAULT_SHORT_URL_OPTIONS, ...options };
+  const opts: ShortUrlOptions =
+    typeof options === "string"
+      ? { ...DEFAULT_SHORT_URL_OPTIONS, domain: options }
+      : { ...DEFAULT_SHORT_URL_OPTIONS, ...options };
 
   const shortCode = encodeId(id);
-  
+
   let url = "";
-  
-  // Add protocol if requested
+
   if (opts.includeProtocol && opts.protocol) {
     url += `${opts.protocol}://`;
   }
-  
-  // Add domain
+
   url += opts.domain;
-  
-  // Add redirect path if requested
+
   if (opts.includeRedirectPath && opts.redirectPathSegment) {
     url += `${opts.pathSeparator}${opts.redirectPathSegment}`;
   }
-  
-  // Add the short code
+
   url += `${opts.pathSeparator}${shortCode}`;
-  
+
   return url;
 }

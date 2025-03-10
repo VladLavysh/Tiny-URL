@@ -24,12 +24,15 @@ const customShortUrl = createShortUrl('https://example.com/very/long/path', 'mys
 console.log(customShortUrl); // Output: myshort.link/r/Xy4p9Q (example)
 
 // Create a short URL with customized options
-const customizedUrl = createShortUrl('https://example.com/very/long/path', {
-  domain: 'myshort.link',  // domain is required
-  includeProtocol: true,
-  protocol: 'https',
-  includeRedirectPath: false
-});
+const customizedUrl = createShortUrl(
+  'https://example.com/very/long/path',
+  'myshort.link',
+  {
+    includeProtocol: true,
+    protocol: 'https',
+    includeRedirectPath: false
+  }
+);
 console.log(customizedUrl); // Output: https://myshort.link/Xy4p9Q (example)
 ```
 
@@ -40,7 +43,6 @@ The `createShortUrl` function accepts a wide range of options for customization:
 ```typescript
 interface CreateShortUrlOptions {
   // Domain options
-  domain: string;                   // Domain for the short URL (REQUIRED)
   includeProtocol?: boolean;        // Whether to include protocol (default: false)
   protocol?: string;                // Protocol to use (default: 'https')
   
@@ -59,24 +61,28 @@ interface CreateShortUrlOptions {
 
 ```typescript
 // Using the SDBM hash algorithm
-const sdbmUrl = createShortUrl('https://example.com/path', {
-  domain: 'short.url',
-  hashAlgorithm: 'sdbm'
-});
+const sdbmUrl = createShortUrl(
+  'https://example.com/path',
+  'short.url',
+  { hashAlgorithm: 'sdbm' }
+);
 
 // Using a custom hash function
-const customHashUrl = createShortUrl('https://example.com/path', {
-  domain: 'short.url',
-  hashAlgorithm: 'custom',
-  customHashFn: (url) => {
-    // Simple custom hash function
-    let hash = 0;
-    for (let i = 0; i < url.length; i++) {
-      hash = (hash * 31 + url.charCodeAt(i)) & 0xFFFFFFFF;
+const customHashUrl = createShortUrl(
+  'https://example.com/path',
+  'short.url',
+  {
+    hashAlgorithm: 'custom',
+    customHashFn: (url) => {
+      // Simple custom hash function
+      let hash = 0;
+      for (let i = 0; i < url.length; i++) {
+        hash = (hash * 31 + url.charCodeAt(i)) & 0xFFFFFFFF;
+      }
+      return hash;
     }
-    return hash;
   }
-});
+);
 ```
 
 ### Decoding a Short URL
@@ -101,31 +107,35 @@ if (unknownUrl === undefined) {
 
 ```typescript
 // Without redirect path segment
-const noRedirectPath = createShortUrl('https://example.com/path', {
-  domain: 'short.url',
-  includeRedirectPath: false
-});
+const noRedirectPath = createShortUrl(
+  'https://example.com/path',
+  'short.url',
+  { includeRedirectPath: false }
+);
 console.log(noRedirectPath); // Output: short.url/Ab3x7Z
 
 // With custom redirect path segment
-const customPath = createShortUrl('https://example.com/path', {
-  domain: 'short.url',
-  redirectPathSegment: 'goto'
-});
+const customPath = createShortUrl(
+  'https://example.com/path',
+  'short.url',
+  { redirectPathSegment: 'goto' }
+);
 console.log(customPath); // Output: short.url/goto/Ab3x7Z
 
 // With custom path separator
-const customSeparator = createShortUrl('https://example.com/path', {
-  domain: 'short.url',
-  pathSeparator: '-'
-});
+const customSeparator = createShortUrl(
+  'https://example.com/path',
+  'short.url',
+  { pathSeparator: '-' }
+);
 console.log(customSeparator); // Output: short.url-r-Ab3x7Z
 
 // With protocol included
-const withProtocol = createShortUrl('https://example.com/path', {
-  domain: 'short.url',
-  includeProtocol: true
-});
+const withProtocol = createShortUrl(
+  'https://example.com/path',
+  'short.url',
+  { includeProtocol: true }
+);
 console.log(withProtocol); // Output: https://short.url/r/Ab3x7Z
 ```
 
@@ -138,12 +148,13 @@ console.log(withProtocol); // Output: https://short.url/r/Ab3x7Z
 
 ## API Reference
 
-### `createShortUrl(longUrl: string, domainOrOptions: string | CreateShortUrlOptions): string`
+### `createShortUrl(longUrl: string, domain: string, options?: Partial<CreateShortUrlOptions>): string`
 
 Creates a short URL from a long URL with customizable options.
 
 - `longUrl`: The original URL to shorten
-- `domainOrOptions`: Either a domain string (required) or an options object with the domain property (required)
+- `domain`: Domain name for the short URL
+- `options`: Optional configuration options
 
 ### `decodeUrl(shortUrl: string): string | undefined`
 
