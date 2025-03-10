@@ -20,6 +20,10 @@
     "short-url",
     "shortener"
   ],
+  "repository": {
+  "type": "git",
+  "url": "https://github.com/VladLavysh/URL-Shortener"
+  },
   "author": "Vladislav Lavysh <vladislav.lavysh@gmail.com> (https://unitio-code.com)",
   "license": "ISC",
   "devDependencies": {
