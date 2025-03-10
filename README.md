@@ -1,4 +1,4 @@
-# Tiny-URL Shortener
+# URL Shortener
 
 A simple and lightweight URL shortening library for Node.js. This package provides functionality to create short URLs from long ones and decode them back.
 
