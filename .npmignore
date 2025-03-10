@@ -1,0 +1,19 @@
+# Source files
+*.ts
+!*.d.ts
+
+# Tests
+__tests__/
+jest.config.js
+
+# Config files
+tsconfig.json
+.gitignore
+
+# IDE files
+.vscode/
+.idea/
+
+# Misc
+.DS_Store
+*.log
