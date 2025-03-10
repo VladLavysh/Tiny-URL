@@ -13,24 +13,30 @@ npm install @vladislav/tiny-url-shortener
 ### Creating a Short URL
 
 ```typescript
-import { createShortUrl } from '@vladislav/tiny-url-shortener';
+import { createShortUrl } from "@vladislav/tiny-url-shortener";
 
-// Create a short URL with required domain parameter
-const shortUrl = createShortUrl('https://example.com/very/long/path/with/many/parameters?param1=value1&param2=value2', 'short.url');
+// 1. Create a short URL with required domain parameter
+const shortUrl = createShortUrl(
+  "https://example.com/very/long/path/with/many/parameters?param1=value1&param2=value2",
+  "short.url"
+);
 console.log(shortUrl); // Output: short.url/r/Ab3x7Z (example)
 
-// Create a short URL with custom domain
-const customShortUrl = createShortUrl('https://example.com/very/long/path', 'myshort.link');
+// 2. Create a short URL with custom domain
+const customShortUrl = createShortUrl(
+  "https://example.com/very/long/path",
+  "myshort.link"
+);
 console.log(customShortUrl); // Output: myshort.link/r/Xy4p9Q (example)
 
-// Create a short URL with customized options
+// 3. Create a short URL with customized options
 const customizedUrl = createShortUrl(
-  'https://example.com/very/long/path',
-  'myshort.link',
+  "https://example.com/very/long/path",
+  "myshort.link",
   {
     includeProtocol: true,
-    protocol: 'https',
-    includeRedirectPath: false
+    protocol: "https",
+    includeRedirectPath: false,
   }
 );
 console.log(customizedUrl); // Output: https://myshort.link/Xy4p9Q (example)
@@ -43,17 +49,17 @@ The `createShortUrl` function accepts a wide range of options for customization:
 ```typescript
 interface CreateShortUrlOptions {
   // Domain options
-  includeProtocol?: boolean;        // Whether to include protocol (default: false)
-  protocol?: string;                // Protocol to use (default: 'https')
-  
+  includeProtocol?: boolean; // Whether to include protocol (default: false)
+  protocol?: string; // Protocol to use (default: 'https')
+
   // Path options
-  includeRedirectPath?: boolean;    // Whether to include the redirect path segment (default: true)
-  redirectPathSegment?: string;     // Custom path segment (default: 'r')
-  pathSeparator?: string;           // Custom separator between path segments (default: '/')
-  
+  includeRedirectPath?: boolean; // Whether to include the redirect path segment (default: true)
+  redirectPathSegment?: string; // Custom path segment (default: 'r')
+  pathSeparator?: string; // Custom separator between path segments (default: '/')
+
   // Hash algorithm options
-  hashAlgorithm?: 'djb2' | 'sdbm' | 'custom';  // Hash algorithm to use (default: 'djb2')
-  customHashFn?: (url: string) => number;      // Custom hash function
+  hashAlgorithm?: "djb2" | "sdbm" | "custom"; // Hash algorithm to use (default: 'djb2')
+  customHashFn?: (url: string) => number; // Custom hash function
 }
 ```
 
@@ -61,43 +67,37 @@ interface CreateShortUrlOptions {
 
 ```typescript
 // Using the SDBM hash algorithm
-const sdbmUrl = createShortUrl(
-  'https://example.com/path',
-  'short.url',
-  { hashAlgorithm: 'sdbm' }
-);
+const sdbmUrl = createShortUrl("https://example.com/path", "short.url", {
+  hashAlgorithm: "sdbm",
+});
 
 // Using a custom hash function
-const customHashUrl = createShortUrl(
-  'https://example.com/path',
-  'short.url',
-  {
-    hashAlgorithm: 'custom',
-    customHashFn: (url) => {
-      // Simple custom hash function
-      let hash = 0;
-      for (let i = 0; i < url.length; i++) {
-        hash = (hash * 31 + url.charCodeAt(i)) & 0xFFFFFFFF;
-      }
-      return hash;
+const customHashUrl = createShortUrl("https://example.com/path", "short.url", {
+  hashAlgorithm: "custom",
+  customHashFn: (url) => {
+    // Simple custom hash function
+    let hash = 0;
+    for (let i = 0; i < url.length; i++) {
+      hash = (hash * 31 + url.charCodeAt(i)) & 0xffffffff;
     }
-  }
-);
+    return hash;
+  },
+});
 ```
 
 ### Decoding a Short URL
 
 ```typescript
-import { decodeUrl } from '@vladislav/tiny-url-shortener';
+import { decodeUrl } from "@vladislav/tiny-url-shortener";
 
 // Decode a short URL to get the original URL
-const originalUrl = decodeUrl('short.url/r/Ab3x7Z');
+const originalUrl = decodeUrl("short.url/r/Ab3x7Z");
 console.log(originalUrl); // Output: https://example.com/very/long/path (original URL)
 
 // If the short URL is not found in storage
-const unknownUrl = decodeUrl('short.url/r/Unknown');
+const unknownUrl = decodeUrl("short.url/r/Unknown");
 if (unknownUrl === undefined) {
-  console.log('URL not found in storage');
+  console.log("URL not found in storage");
 }
 ```
 
@@ -107,35 +107,29 @@ if (unknownUrl === undefined) {
 
 ```typescript
 // Without redirect path segment
-const noRedirectPath = createShortUrl(
-  'https://example.com/path',
-  'short.url',
-  { includeRedirectPath: false }
-);
+const noRedirectPath = createShortUrl("https://example.com/path", "short.url", {
+  includeRedirectPath: false,
+});
 console.log(noRedirectPath); // Output: short.url/Ab3x7Z
 
 // With custom redirect path segment
-const customPath = createShortUrl(
-  'https://example.com/path',
-  'short.url',
-  { redirectPathSegment: 'goto' }
-);
+const customPath = createShortUrl("https://example.com/path", "short.url", {
+  redirectPathSegment: "goto",
+});
 console.log(customPath); // Output: short.url/goto/Ab3x7Z
 
 // With custom path separator
 const customSeparator = createShortUrl(
-  'https://example.com/path',
-  'short.url',
-  { pathSeparator: '-' }
+  "https://example.com/path",
+  "short.url",
+  { pathSeparator: "-" }
 );
 console.log(customSeparator); // Output: short.url-r-Ab3x7Z
 
 // With protocol included
-const withProtocol = createShortUrl(
-  'https://example.com/path',
-  'short.url',
-  { includeProtocol: true }
-);
+const withProtocol = createShortUrl("https://example.com/path", "short.url", {
+  includeProtocol: true,
+});
 console.log(withProtocol); // Output: https://short.url/r/Ab3x7Z
 ```
 
